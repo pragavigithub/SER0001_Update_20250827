@@ -109,6 +109,12 @@
                             <p><strong>Created Date:</strong></p>
                             <span class="badge bg-primary">{{ transfer.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
                         </div>
+                        {% if transfer.sap_document_number %}
+                        <div class="col-sm-6">
+                            <p><strong>SAP Document Number:</strong></p>
+                            <span class="badge bg-success">{{ transfer.sap_document_number }}</span>
+                        </div>
+                        {% endif %}
                         {% if transfer.notes %}
                         <div class="col-sm-6">
                             <p><strong>Notes:</strong></p>
