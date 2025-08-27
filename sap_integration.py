@@ -1352,76 +1352,7 @@ class SAPIntegration:
             if absolute_entry == 613:
                 # Enhanced mock data with warehouse and bin code details
                 mock_pick_list = {
-                    "Absoluteentry": 613,
-                    "Name": "SCM-ORD",
-                    "OwnerCode": 15,
-                    "OwnerName": None,
-                    "PickDate": "2024-02-02T00:00:00Z",
-                    "Remarks": None,
-                    "Status": "ps_Closed",
-                    "ObjectType": "156",
-                    "UseBaseUnits": "tNO",
-                    "PickListsLines": [
-                            {
-                                "AbsoluteEntry": 613,
-                                "LineNumber": 0,
-                                "OrderEntry": 1238,
-                                "OrderRowID": 1,
-                                "PickedQuantity": 0.0,
-                                "PickStatus": "ps_Released",
-                                "ReleasedQuantity": 113.0,
-                                "PreviouslyReleasedQuantity": 0.0,
-                                "BaseObjectType": 17,
-                                "SerialNumbers": [],
-                                "BatchNumbers": [],
-                                "enhanced_data": {
-                                    "ItemCode": "ITEM-001",
-                                    "WarehouseCode": "7000-FG",
-                                    "Customer": "Test Customer",
-                                    "ItemDescription": "Sample Item Description"
-                                },
-                                "DocumentLinesBinAllocations": [
-                                    {
-                                        "BinAbsEntry": 1,
-                                        "Quantity": 21000.0,
-                                        "AllowNegativeQuantity": "tNO",
-                                        "SerialAndBatchNumbersBaseLine": 0,
-                                        "BaseLineNumber": 0,
-                                        "Warehouse": "7000-FG",
-                                        "BinCode": "7000-FG-SYSTEM-BIN-LOCATION"
-                                    },
-                                    {
-                                        "BinAbsEntry": 1,
-                                        "Quantity": 21000.0,
-                                        "AllowNegativeQuantity": "tNO",
-                                        "SerialAndBatchNumbersBaseLine": 0,
-                                        "BaseLineNumber": 0,
-                                        "Warehouse": "7000-FG",
-                                        "BinCode": "7000-FG-SYSTEM-BIN-LOCATION"
-                                    }
-                                ]
-                            },
-                            {
-                                "AbsoluteEntry": 613,
-                                "LineNumber": 1,
-                                "OrderEntry": 1238,
-                                "OrderRowID": 2,
-                                "PickedQuantity": 0.0,
-                                "PickStatus": "ps_Released",
-                                "ReleasedQuantity": 156.0,
-                                "PreviouslyReleasedQuantity": 0.0,
-                                "BaseObjectType": 17,
-                                "SerialNumbers": [],
-                                "BatchNumbers": [],
-                                "enhanced_data": {
-                                    "ItemCode": "ITEM-002",
-                                    "WarehouseCode": "8000-WH",
-                                    "Customer": "Another Customer",
-                                    "ItemDescription": "Another Item Description"
-                                },
-                                "DocumentLinesBinAllocations": []
-                            }
-                        ]
+
                     }
                 
                 # Return enhanced mock data
@@ -1509,42 +1440,7 @@ class SAPIntegration:
             'success': True,
             'pick_lists': [
                 {
-                    "Absoluteentry": 613,
-                    "Name": "SCM-ORD",
-                    "OwnerCode": 15,
-                    "OwnerName": "Demo User",
-                    "PickDate": "2024-02-02T00:00:00Z",
-                    "Remarks": "Mock pick list for development",
-                    "Status": "ps_Open",
-                    "ObjectType": "156",
-                    "UseBaseUnits": "tNO",
-                    "PickListsLines": [
-                        {
-                            "AbsoluteEntry": 613,
-                            "LineNumber": 0,
-                            "OrderEntry": 1236,
-                            "OrderRowID": 0,
-                            "PickedQuantity": 0.0,
-                            "PickStatus": "ps_Open",
-                            "ReleasedQuantity": 0.0,
-                            "PreviouslyReleasedQuantity": 0.0,
-                            "BaseObjectType": 17,
-                            "SerialNumbers": [],
-                            "BatchNumbers": [],
-                            "DocumentLinesBinAllocations": [
-                                {
-                                    "BinAbsEntry": 1,
-                                    "Quantity": 1000.0,
-                                    "AllowNegativeQuantity": "tNO",
-                                    "SerialAndBatchNumbersBaseLine": 0,
-                                    "BaseLineNumber": 0
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
-            'total_count': 1
+                }]
         }
 
     def sync_pick_list_to_local_db(self, sap_pick_list, local_pick_list):
@@ -1631,39 +1527,7 @@ class SAPIntegration:
         return {
             'success': True,
             'pick_list': {
-                "Absoluteentry": absolute_entry,
-                "Name": f"MOCK-{absolute_entry}",
-                "OwnerCode": 15,
-                "OwnerName": "Demo User",
-                "PickDate": "2024-02-02T00:00:00Z",
-                "Remarks": "Mock pick list detail",
-                "Status": "ps_Open",
-                "ObjectType": "156",
-                "UseBaseUnits": "tNO",
-                "PickListsLines": [
-                    {
-                        "AbsoluteEntry": absolute_entry,
-                        "LineNumber": 0,
-                        "OrderEntry": 1236,
-                        "OrderRowID": 0,
-                        "PickedQuantity": 0.0,
-                        "PickStatus": "ps_Open",
-                        "ReleasedQuantity": 0.0,
-                        "PreviouslyReleasedQuantity": 0.0,
-                        "BaseObjectType": 17,
-                        "SerialNumbers": [],
-                        "BatchNumbers": [],
-                        "DocumentLinesBinAllocations": [
-                            {
-                                "BinAbsEntry": 1,
-                                "Quantity": 1000.0,
-                                "AllowNegativeQuantity": "tNO",
-                                "SerialAndBatchNumbersBaseLine": 0,
-                                "BaseLineNumber": 0
-                            }
-                        ]
-                    }
-                ]
+
             }
         }
 
