@@ -35,12 +35,7 @@ def cascading_get_warehouses():
         # Return mock data for offline mode or on error
         return jsonify({
             'success': True,
-            'warehouses': [
-                {'WarehouseCode': 'WH001', 'WarehouseName': 'Main Warehouse'},
-                {'WarehouseCode': 'WH002', 'WarehouseName': 'Secondary Warehouse'},
-                {'WarehouseCode': 'WH003', 'WarehouseName': 'Finished Goods'},
-                {'WarehouseCode': 'WH004', 'WarehouseName': 'Raw Materials'}
-            ]
+
         })
             
     except Exception as e:
@@ -85,13 +80,7 @@ def cascading_get_bin_locations():
         # Return mock data for offline mode or on error
         return jsonify({
             'success': True,
-            'bins': [
-                {'BinCode': f'{warehouse_code}-A01', 'BinName': 'Aisle A - Position 01'},
-                {'BinCode': f'{warehouse_code}-A02', 'BinName': 'Aisle A - Position 02'},
-                {'BinCode': f'{warehouse_code}-B01', 'BinName': 'Aisle B - Position 01'},
-                {'BinCode': f'{warehouse_code}-B02', 'BinName': 'Aisle B - Position 02'},
-                {'BinCode': f'{warehouse_code}-C01', 'BinName': 'Aisle C - Position 01'}
-            ]
+
         })
             
     except Exception as e:
@@ -162,11 +151,7 @@ def cascading_get_batches():
         
         return jsonify({
             'success': True,
-            'batches': [
-                {'BatchNumber': f'BATCH-{item_code}-001', 'Quantity': 100, 'ExpiryDate': future_date},
-                {'BatchNumber': f'BATCH-{item_code}-002', 'Quantity': 75, 'ExpiryDate': future_date},
-                {'BatchNumber': f'BATCH-{item_code}-003', 'Quantity': 50, 'ExpiryDate': future_date}
-            ]
+
         })
             
     except Exception as e:

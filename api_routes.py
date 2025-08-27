@@ -84,10 +84,6 @@ def register_api_routes(app):
             item_code = request.args.get('item_code') or request.args.get('item', 'ITEM001')
             return jsonify({
                 'success': True,
-                'batches': [
-                    {'BatchNumber': 'BATCH001', 'Quantity': 100, 'ExpiryDate': '2024-12-31'},
-                    {'BatchNumber': 'BATCH002', 'Quantity': 50, 'ExpiryDate': '2025-06-30'}
-                ]
             })
 
     @app.route('/api/get-item-name', methods=['GET'])

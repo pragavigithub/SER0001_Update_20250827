@@ -94,30 +94,7 @@ def get_batch_numbers():
         
         # Return realistic mock data for offline mode or on error
         mock_batches = [
-            {
-                'Batch': f'BTH-{clean_item_code}-001',
-                'ItemCode': item_code,
-                'ExpirationDate': '2025-12-31T00:00:00Z',
-                'Quantity': 100,
-                'OnHandQuantity': 100,
-                'Status': 'bdsStatus_Released'
-            },
-            {
-                'Batch': f'BTH-{clean_item_code}-002', 
-                'ItemCode': item_code,
-                'ExpirationDate': '2025-06-30T00:00:00Z',
-                'Quantity': 75,
-                'OnHandQuantity': 75,
-                'Status': 'bdsStatus_Released'
-            },
-            {
-                'Batch': f'BTH-{clean_item_code}-003',
-                'ItemCode': item_code, 
-                'ExpirationDate': '2026-03-15T00:00:00Z',
-                'Quantity': 50,
-                'OnHandQuantity': 50,
-                'Status': 'bdsStatus_Released'
-            }
+
         ]
         
         logging.info(f"📦 Returning {len(mock_batches)} mock batches for item {item_code}")
@@ -166,30 +143,7 @@ def get_bins():
         # Return mock data for offline mode or on error based on your SAP B1 BinLocations structure
         return jsonify({
             'success': True,
-            'bins': [
-                {
-                    'AbsEntry': 1,
-                    'Warehouse': warehouse_code,
-                    'Sublevel1': 'A103',
-                    'BinCode': f'{warehouse_code}-A103',
-                    'Inactive': 'tNO',
-                    'Description': 'Bin Location A103',
-                    'BarCode': 'A103',
-                    'IsSystemBin': 'tNO',
-                    'ReceivingBinLocation': 'tYES'
-                },
-                {
-                    'AbsEntry': 2,
-                    'Warehouse': warehouse_code,
-                    'Sublevel1': 'J-830',
-                    'BinCode': f'{warehouse_code}-J-830',
-                    'Inactive': 'tNO',
-                    'Description': 'Bin Location J-830',
-                    'BarCode': 'J-830',
-                    'IsSystemBin': 'tNO',
-                    'ReceivingBinLocation': 'tYES'
-                }
-            ]
+
         })
             
     except Exception as e:
@@ -198,9 +152,7 @@ def get_bins():
         return jsonify({
             'success': True,
             'bins': [
-                {'BinCode': f'{warehouse_code}-BIN-01', 'BinName': 'Bin Location 01'},
-                {'BinCode': f'{warehouse_code}-BIN-02', 'BinName': 'Bin Location 02'},
-                {'BinCode': f'{warehouse_code}-BIN-03', 'BinName': 'Bin Location 03'}
+
             ]
         })
 
@@ -272,28 +224,7 @@ def get_batches():
         return jsonify({
             'success': True,
             'batches': [
-                {
-                    'DocEntry': 1,
-                    'ItemCode': item_code,
-                    'ItemDescription': f'Item {item_code}',
-                    'Status': 'bdsStatus_Released',
-                    'Batch': f'{item_code}-BATCH001',
-                    'BatchNumber': f'{item_code}-BATCH001',
-                    'AdmissionDate': '2025-01-01T00:00:00Z',
-                    'ExpirationDate': '2025-12-31',
-                    'SystemNumber': 1
-                },
-                {
-                    'DocEntry': 2,
-                    'ItemCode': item_code,
-                    'ItemDescription': f'Item {item_code}',
-                    'Status': 'bdsStatus_Released',
-                    'Batch': f'{item_code}-BATCH002',
-                    'BatchNumber': f'{item_code}-BATCH002',
-                    'AdmissionDate': '2025-02-01T00:00:00Z',
-                    'ExpirationDate': '2025-11-30',
-                    'SystemNumber': 2
-                }
+
             ]
         })
             
@@ -303,9 +234,7 @@ def get_batches():
         return jsonify({
             'success': True,
             'batches': [
-                {'Batch': f'BATCH-{item_code}-001', 'Quantity': 100, 'ExpirationDate': '2025-12-31'},
-                {'Batch': f'BATCH-{item_code}-002', 'Quantity': 50, 'ExpirationDate': '2025-11-30'},
-                {'Batch': f'BATCH-{item_code}-003', 'Quantity': 25, 'ExpirationDate': '2025-10-31'}
+
             ]
         })
 
