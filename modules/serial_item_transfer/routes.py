@@ -732,13 +732,24 @@ def post_to_sap(transfer_id):
                 'status': 'posted'
             })
         else:
-            # Keep document in QC approved status for retry
-            logging.error(f"SAP B1 posting failed for transfer {transfer_id}: {sap_result.get('error')}")
+            # Reject document and send back for editing when SAP posting fails
+            transfer.status = 'rejected'
+            transfer.qc_notes = f"SAP B1 posting failed: {sap_result.get('error', 'Unknown error')}. Document rejected for editing."
+            transfer.updated_at = datetime.utcnow()
+            
+            # Reset QC approval to allow re-editing
+            for item in transfer.items:
+                item.qc_status = 'pending'
+                item.updated_at = datetime.utcnow()
+            
+            db.session.commit()
+            
+            logging.error(f"SAP B1 posting failed for transfer {transfer_id}: {sap_result.get('error')} - Document rejected for editing")
             return jsonify({
                 'success': False,
-                'error': f'SAP B1 posting failed: {sap_result.get("error", "Unknown error")}',
-                'retry_available': True,
-                'status': transfer.status  # Keep current status
+                'error': f'SAP B1 posting failed: {sap_result.get("error", "Unknown error")}. Document has been rejected and sent back for editing.',
+                'status': 'rejected',
+                'redirect_to_edit': True
             }), 500
 
     except Exception as e:
