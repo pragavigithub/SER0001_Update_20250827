@@ -205,39 +205,7 @@ class SAPIntegration:
         if not self.ensure_logged_in():
             # Return mock data for offline mode
             return {
-                'DocNum':
-                po_number,
-                'CardCode':
-                'V001',  # Sample vendor code
-                'CardName':
-                'Sample Vendor Ltd',
-                'DocDate':
-                '2025-01-08',
-                'DocTotal':
-                15000.00,
-                'DocumentLines': [{
-                    'LineNum': 0,
-                    'ItemCode': 'ITM001',
-                    'ItemDescription': 'Sample Item 1',
-                    'Quantity': 100,
-                    'OpenQuantity': 100,
-                    'RemainingOpenQuantity': 100,
-                    'Price': 50.00,
-                    'UoMCode': 'EA',
-                    'WarehouseCode': 'WH01',
-                    'LineStatus': 'bost_Open'
-                }, {
-                    'LineNum': 1,
-                    'ItemCode': 'ITM002',
-                    'ItemDescription': 'Sample Item 2',
-                    'Quantity': 50,
-                    'OpenQuantity': 30,
-                    'RemainingOpenQuantity': 30,
-                    'Price': 200.00,
-                    'UoMCode': 'KGS',
-                    'WarehouseCode': 'WH01',
-                    'LineStatus': 'bost_Open'
-                }]
+
             }
 
         url = f"{self.base_url}/b1s/v1/PurchaseOrders?$filter=DocNum eq {po_number}"
@@ -255,28 +223,7 @@ class SAPIntegration:
             )
             # Return mock data on error
             return {
-                'DocNum':
-                po_number,
-                'CardCode':
-                'V001',
-                'CardName':
-                'Sample Vendor Ltd',
-                'DocDate':
-                '2025-01-08',
-                'DocTotal':
-                15000.00,
-                'DocumentLines': [{
-                    'LineNum': 0,
-                    'ItemCode': 'ITM001',
-                    'ItemDescription': 'Sample Item 1',
-                    'Quantity': 100,
-                    'OpenQuantity': 100,
-                    'RemainingOpenQuantity': 100,
-                    'Price': 50.00,
-                    'UoMCode': 'EA',
-                    'WarehouseCode': 'WH01',
-                    'LineStatus': 'bost_Open'
-                }]
+
             }
 
     def get_purchase_order_items(self, po_number):
@@ -416,7 +363,7 @@ class SAPIntegration:
                     enhanced_item = {
                         'ItemCode': item_code,
                         'ItemName': item_info.get('ItemName', ''),
-                        'UoM': item_info.get('InventoryUoM', 'EA'),
+                        'UoM': item_info.get('InventoryUoM', ''),
                         'QuantityOnStock': float(item_info.get('QuantityOnStock', 0)),
                         'OnHand': in_stock_qty,
                         'OnStock': in_stock_qty,
@@ -501,80 +448,6 @@ class SAPIntegration:
         # Only return items with InStock > 0 to match the filtering logic
         return [
             {
-                'ItemCode': 'CO0726Y',
-                'ItemName': 'COATED LOWER PLATE',
-                'ItemDescription': 'COATED LOWER PLATE',
-                'UoM': 'EA',
-                'QuantityOnStock': 100.0,
-                'OnHand': 95.0,
-                'OnStock': 95.0,
-                'InStock': 95.0,
-                'Ordered': 0.0,
-                'StandardAveragePrice': 125.50,
-                'WarehouseCode': '7000-FG',
-                'Warehouse': '7000-FG',
-                'BinCode': bin_code,
-                'BinAbsEntry': 1,
-                'BusinessPlaceID': 5,
-                'BatchCount': 1,
-                'BatchNumbers': ['20220729'],
-                'ExpiryDates': [None],
-                'AdmissionDates': ['2022-07-29T00:00:00Z'],
-                'BatchNumber': '20220729',
-                'Batch': '20220729',
-                'Status': 'bdsStatus_Released',
-                'AdmissionDate': '2022-07-29T00:00:00Z',
-                'ExpirationDate': None,
-                'ExpiryDate': None,
-                'Quantity': 95.0,
-                'BatchDetails': [{
-                    'DocEntry': 1,
-                    'ItemCode': 'CO0726Y',
-                    'ItemDescription': 'COATED LOWER PLATE',
-                    'Status': 'bdsStatus_Released',
-                    'Batch': '20220729',
-                    'AdmissionDate': '2022-07-29T00:00:00Z',
-                    'ExpirationDate': None,
-                    'SystemNumber': 1
-                }]
-            },
-            {
-                'ItemCode': 'CO0098Y',
-                'ItemName': 'Big Aluminium Insert Coated RR AC0101',
-                'ItemDescription': 'Big Aluminium Insert Coated RR AC0101',
-                'UoM': 'PCS',
-                'QuantityOnStock': 50.0,
-                'OnHand': 48.0,
-                'OnStock': 48.0,
-                'InStock': 48.0,
-                'Ordered': 10.0,
-                'StandardAveragePrice': 89.75,
-                'WarehouseCode': '7000-FG',
-                'Warehouse': '7000-FG',
-                'BinCode': bin_code,
-                'BinAbsEntry': 1,
-                'BusinessPlaceID': 5,
-                'BatchCount': 1,
-                'BatchNumbers': ['20220729'],
-                'ExpiryDates': [None],
-                'AdmissionDates': ['2022-07-29T00:00:00Z'],
-                'BatchNumber': '20220729',
-                'Batch': '20220729',
-                'Status': 'bdsStatus_Released',
-                'AdmissionDate': '2022-07-29T00:00:00Z',
-                'ExpirationDate': None,
-                'ExpiryDate': None,
-                'Quantity': 48.0,
-                'BatchDetails': [{
-                    'DocEntry': 2,
-                    'ItemCode': 'CO0098Y',
-                    'ItemDescription': 'Big Aluminium Insert Coated RR AC0101',
-                    'Status': 'bdsStatus_Released',
-                    'Batch': '20220729',
-                    'AdmissionDate': '2022-07-29T00:00:00Z',
-                    'ExpirationDate': None,
-                    'SystemNumber': 1
-                }]
             }
         ]
 
@@ -1212,7 +1085,7 @@ class SAPIntegration:
 
                 # Get UoM details
                 uom_group_entry = item_data.get('UoMGroupEntry')
-                inventory_uom = item_data.get('InventoryUoM', 'EA')
+                inventory_uom = item_data.get('InventoryUoM', '')
 
                 return {
                     'ItemCode': item_data.get('ItemCode'),
@@ -2453,41 +2326,7 @@ class SAPIntegration:
         return {
             'success': True,
             'sales_order': {
-                "DocEntry": doc_entry,
-                "DocNum": 232410148,
-                "DocType": "dDocument_Items",
-                "DocDate": "2024-02-02T00:00:00Z",
-                "CardCode": "ALFEPL",
-                "CardName": "ALF Engineering Pvt. Ltd",
-                "DocumentStatus": "bost_Open",
-                "DocumentLines": [
-                    {
-                        "LineNum": 0,
-                        "ItemCode": "ITEM001",
-                        "ItemDescription": "Sample Item 1",
-                        "Quantity": 1000.0,
-                        "OpenQuantity": 500.0,
-                        "DeliveredQuantity": 500.0,
-                        "UnitPrice": 100.0,
-                        "LineTotal": 100000.0,
-                        "WarehouseCode": "7000-FG",
-                        "UoMCode": "EA",
-                        "LineStatus": "bost_Open"
-                    },
-                    {
-                        "LineNum": 1,
-                        "ItemCode": "ITEM002", 
-                        "ItemDescription": "Sample Item 2",
-                        "Quantity": 2000.0,
-                        "OpenQuantity": 1000.0,
-                        "DeliveredQuantity": 1000.0,
-                        "UnitPrice": 150.0,
-                        "LineTotal": 300000.0,
-                        "WarehouseCode": "7000-FG",
-                        "UoMCode": "EA",
-                        "LineStatus": "bost_Open"
-                    }
-                ]
+
             }
         }
 
@@ -2885,7 +2724,7 @@ class SAPIntegration:
                     "Quantity": len(item.serial_numbers),  # Quantity based on serial count
                     "WarehouseCode": item.to_warehouse_code,
                     "FromWarehouseCode": item.from_warehouse_code,
-                    "UoMCode": item.unit_of_measure or "EA"
+                    "UoMCode": item.unit_of_measure or ""
                 }
                 
                 # Add serial numbers to the line

@@ -799,7 +799,7 @@ def add_grpo_item(grpo_id):
         po_quantity=po_line_item.get('Quantity') if po_line_item else quantity,
         open_quantity=po_line_item.get('OpenQuantity') if po_line_item else quantity,
         received_quantity=quantity,
-        unit_of_measure=(po_line_item.get('UoMCode') if po_line_item else None) or (po_line_item.get('UoMEntry') if po_line_item else None) or request.form.get('unit_of_measure', 'EA'),
+        unit_of_measure=(po_line_item.get('UoMCode') if po_line_item else None) or (po_line_item.get('UoMEntry') if po_line_item else None) or request.form.get('unit_of_measure', ''),
         unit_price=po_line_item.get('Price') if po_line_item else 0,
         bin_location=bin_location,
         batch_number=batch_number,
