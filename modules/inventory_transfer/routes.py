@@ -103,7 +103,7 @@ def detail(transfer_id):
                     'Quantity': requested_qty,
                     'TransferredQuantity': transferred_qty,
                     'RemainingQuantity': remaining_qty,
-                    'UnitOfMeasure': sap_line.get('UoMCode', sap_line.get('MeasureUnit', 'EA')),
+                    'UnitOfMeasure': sap_line.get('UoMCode', sap_line.get('MeasureUnit', '')),
                     'FromWarehouseCode': sap_line.get('FromWarehouseCode'),
                     'ToWarehouseCode': sap_line.get('WarehouseCode'),
                     'LineStatus': actual_line_status  # Use calculated status
@@ -225,7 +225,7 @@ def create():
                         requested_quantity=quantity,  # Set requested quantity
                         transferred_quantity=0,  # Initially 0
                         remaining_quantity=quantity,  # Initially same as requested
-                        unit_of_measure=sap_line.get('UoMCode', sap_line.get('MeasureUnit', 'EA')),
+                        unit_of_measure=sap_line.get('UoMCode', sap_line.get('MeasureUnit', '')),
                         from_warehouse_code=sap_line.get('FromWarehouseCode', from_warehouse),
                         to_warehouse_code=sap_line.get('WarehouseCode', to_warehouse),
                         from_bin='',  # Will be filled later
