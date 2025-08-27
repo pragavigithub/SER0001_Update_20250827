@@ -17,14 +17,14 @@
                         <i data-feather="check"></i> Approve
                     </button>
                 </form>
-                <button class="btn btn-danger ms-2" onclick="rejectPickList({{ pick_list.id }})">
+                <button class="btn btn-danger ms-2" onclick="rejectPickList('{{ pick_list.id }}')">
                     <i data-feather="x"></i> Reject
                 </button>
                 {% endif %}
                 
                 <!-- Show Mark as Picked button for SAP pick lists -->
                 {% if pick_list.absolute_entry %}
-                <button class="btn btn-primary ms-2" onclick="markAsPicked({{ pick_list.id }}, {{ pick_list.absolute_entry }})">
+                <button class="btn btn-primary ms-2" onclick="markAsPicked('{{ pick_list.id }}', '{{ pick_list.absolute_entry }}')">
                     <i data-feather="package"></i> Mark as Picked
                 </button>
                 {% else %}
@@ -222,11 +222,11 @@
 <!--                                    {% endif %}-->
 <!--                                </td>-->
                                 <td>
-                                    <button class="btn btn-sm btn-outline-primary" onclick="viewLineDetails({{ line.LineNumber }})">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="viewLineDetails('{{ line.LineNumber }}')">
                                         <i data-feather="eye"></i>
                                     </button>
                                     {% if line.PickStatus != 'ps_Picked' %}
-                                    <button class="btn btn-sm btn-success ms-1" onclick="markSAPLineAsPicked({{ line.LineNumber }}, '{{ line.ItemCode or line.OrderEntry }}', {{ pick_list.absolute_entry }}, {{ line.ReleasedQuantity }})">
+                                    <button class="btn btn-sm btn-success ms-1" onclick="markSAPLineAsPicked('{{ line.LineNumber }}', '{{ line.ItemCode or line.OrderEntry }}', '{{ pick_list.absolute_entry }}', '{{ line.ReleasedQuantity }}')">
                                         <i data-feather="check"></i> Pick
                                     </button>
                                     {% endif %}

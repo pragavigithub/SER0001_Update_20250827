@@ -156,7 +156,7 @@
                                         <i data-feather="eye"></i> View
                                     </a>
                                     {% if current_user.role in ['admin', 'manager'] and pick_list.status == 'pending' %}
-                                    <button class="btn btn-sm btn-outline-success" onclick="approvePickList({{ pick_list.id }})">
+                                    <button class="btn btn-sm btn-outline-success" onclick="approvePickList('{{ pick_list.id }}')">
                                         <i data-feather="check"></i> Approve
                                     </button>
                                     {% endif %}
