@@ -630,6 +630,11 @@ def serial_create():
             flash('From Warehouse and To Warehouse are required', 'error')
             return render_template('serial_create_transfer.html')
         
+        # **ENHANCED WAREHOUSE VALIDATION** - Prevent same from/to warehouse
+        if from_warehouse and to_warehouse and from_warehouse.strip() == to_warehouse.strip():
+            flash('From Warehouse and To Warehouse cannot be the same. Please select different warehouses.', 'error')
+            return render_template('serial_create_transfer.html')
+        
         # Create new transfer with auto-generated number
         transfer = SerialNumberTransfer(
             transfer_number=transfer_number,
