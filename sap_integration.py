@@ -78,22 +78,7 @@ class SAPIntegration:
             )
             # Return mock data for offline mode to allow testing based on your real data
             return {
-                'DocNum': doc_num,
-                'FromWarehouse': '7000-FG',
-                'ToWarehouse': '7000-QFG', 
-                'DocumentStatus': 'bost_Open',
-                'DocStatus': 'bost_Open',
-                'StockTransferLines': [
-                    {
-                        'LineNum': 0,
-                        'ItemCode': 'MOCK-ITEM-001',
-                        'ItemDescription': 'Mock Item for Testing',
-                        'Quantity': 10.0,
-                        'FromWarehouseCode': '7000-FG',
-                        'WarehouseCode': '7000-QFG',
-                        'LineStatus': 'bost_Open'
-                    }
-                ]
+
             }
 
         try:
@@ -636,19 +621,9 @@ class SAPIntegration:
             )
             # Return mock batch data for offline mode
             mock_batches = [{
-                "Batch": f"BATCH-{item_code}-001",
-                "ItemCode": item_code,
-                "Status": "bdsStatus_Released",
-                "ExpirationDate": None,
-                "ManufacturingDate": None,
-                "AdmissionDate": "2025-01-01T00:00:00Z"
+
             }, {
-                "Batch": f"BATCH-{item_code}-002",
-                "ItemCode": item_code,
-                "Status": "bdsStatus_Released",
-                "ExpirationDate": None,
-                "ManufacturingDate": None,
-                "AdmissionDate": "2025-01-01T00:00:00Z"
+
             }]
             self._batch_cache[item_code] = mock_batches
             return mock_batches
@@ -722,10 +697,7 @@ class SAPIntegration:
         if not self.ensure_logged_in():
             logging.warning("⚠️ No SAP B1 session - returning mock stock data")
             return {
-                'OnHandQuantity': 100,
-                'Warehouse': warehouse_code,
-                'ExpiryDate': '2025-12-31',
-                'ManufacturingDate': '2025-01-01'
+
             }
 
         try:
@@ -780,9 +752,7 @@ class SAPIntegration:
             if not self.ensure_logged_in():
                 logging.warning("⚠️ SAP B1 not available, returning mock bin location")
                 mock_data = {
-                    'Warehouse': '7000-FG',
-                    'BinCode': f'7000-FG-BIN-{bin_abs_entry}',
-                    'AbsEntry': bin_abs_entry
+
                 }
                 self._bin_location_cache[bin_abs_entry] = mock_data
                 return mock_data
@@ -2828,12 +2798,7 @@ class SAPIntegration:
             if not self.ensure_logged_in():
                 logging.warning("SAP B1 not available, returning mock validation for Serial Item Transfer")
                 return {
-                    'valid': True,
-                    'item_code': 'MOCK-ITEM',
-                    'item_description': f'Mock Item for {serial_number}',
-                    'warehouse_code': warehouse_code,
-                    'dist_number': serial_number,
-                    'source': 'mock'
+
                 }
 
             # SAP B1 SQL Query API endpoint as specified
