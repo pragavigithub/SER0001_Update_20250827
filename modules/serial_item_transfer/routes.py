@@ -634,7 +634,7 @@ def post_to_sap(transfer_id):
             "CardCode": "",
             "CardName": "",
             "Address": "",
-            "Comments": "Serial Number Item Transfer from WMS",
+            "Comments": f"Serial Number Item Transfer from WMS - {current_user.username}",
             "JournalMemo": f"Serial Number Item Transfer - {transfer.transfer_number}",
             "PriceList": -1,
             "SalesPersonCode": -1,

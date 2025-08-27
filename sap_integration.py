@@ -1035,7 +1035,7 @@ class SAPIntegration:
 
         transfer_data = {
             "DocDate": datetime.now().strftime('%Y-%m-%d'),
-            "Comments": f"QC Approved Serial Item Transfer {transfer_document.transfer_number} by {transfer_document.qc_approver.username if transfer_document.qc_approver else 'System'}",
+            "Comments": f"Serial Item Transfer {transfer_document.transfer_number} - {transfer_document.qc_approver.username if transfer_document.qc_approver else 'System'}",
             "FromWarehouse": transfer_document.from_warehouse,
             "ToWarehouse": transfer_document.to_warehouse,
             "StockTransferLines": stock_transfer_lines
@@ -2757,7 +2757,7 @@ class SAPIntegration:
                 "CardCode": "",
                 "CardName": "",
                 "Address": "",
-                "Comments": serial_transfer_document.notes or "Serial Number Transfer from WMS",
+                "Comments": f"Serial Number Transfer {serial_transfer_document.transfer_number} - {serial_transfer_document.user.username if serial_transfer_document.user else 'System'}",
                 "JournalMemo": f"Serial Number Transfer - {serial_transfer_document.transfer_number}",
                 "PriceList": -1,
                 "SalesPersonCode": -1,
