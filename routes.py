@@ -43,9 +43,7 @@ def get_warehouses():
         return jsonify({
             'success': True,
             'warehouses': [
-                {'WarehouseCode': 'WH001', 'WarehouseName': 'Main Warehouse'},
-                {'WarehouseCode': 'WH002', 'WarehouseName': 'Secondary Warehouse'},
-                {'WarehouseCode': 'WH003', 'WarehouseName': 'Storage Warehouse'}
+
             ]
         })
             
@@ -55,9 +53,7 @@ def get_warehouses():
         return jsonify({
             'success': True,
             'warehouses': [
-                {'WarehouseCode': 'WH001', 'WarehouseName': 'Main Warehouse'},
-                {'WarehouseCode': 'WH002', 'WarehouseName': 'Secondary Warehouse'},
-                {'WarehouseCode': 'WH003', 'WarehouseName': 'Storage Warehouse'}
+
             ]
         })
 
