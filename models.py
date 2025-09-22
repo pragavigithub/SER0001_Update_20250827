@@ -651,3 +651,130 @@ class DocumentNumberSeries(db.Model):
         
         return doc_number
 
+
+class SerialNumberTransfer(db.Model):
+    """Serial Number Transfer model for transferring serial-numbered items between warehouses"""
+    __tablename__ = 'serial_number_transfers'
+
+    id = db.Column(db.Integer, primary_key=True)
+    transfer_number = db.Column(db.String(50), nullable=False, unique=True)
+    sap_document_number = db.Column(db.String(50), nullable=True)
+    status = db.Column(db.String(20), default='draft')  # draft, submitted, qc_approved, posted, rejected
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    qc_approver_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    qc_approved_at = db.Column(db.DateTime, nullable=True)
+    qc_notes = db.Column(db.Text, nullable=True)
+    from_warehouse = db.Column(db.String(10), nullable=False)
+    to_warehouse = db.Column(db.String(10), nullable=False)
+    priority = db.Column(db.String(10), default='normal')
+    notes = db.Column(db.Text, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    user = relationship('User', foreign_keys=[user_id], backref='serial_transfers')
+    qc_approver = relationship('User', foreign_keys=[qc_approver_id], backref='qc_approved_serial_transfers')
+    items = relationship('SerialNumberTransferItem', back_populates='transfer', cascade='all, delete-orphan')
+
+    def __repr__(self):
+        return f'<SerialNumberTransfer {self.transfer_number}>'
+
+
+class SerialNumberTransferItem(db.Model):
+    """Serial Number Transfer Item model"""
+    __tablename__ = 'serial_number_transfer_items'
+
+    id = db.Column(db.Integer, primary_key=True)
+    serial_transfer_id = db.Column(db.Integer, db.ForeignKey('serial_number_transfers.id'), nullable=False)
+    item_code = db.Column(db.String(50), nullable=False)
+    item_name = db.Column(db.String(200), nullable=True)
+    unit_of_measure = db.Column(db.String(10), default='EA')
+    from_warehouse_code = db.Column(db.String(10), nullable=False)
+    to_warehouse_code = db.Column(db.String(10), nullable=False)
+    qc_status = db.Column(db.String(20), default='pending')  # pending, approved, rejected
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    transfer = relationship('SerialNumberTransfer', back_populates='items')
+    serials = relationship('SerialNumberTransferSerial', back_populates='transfer_item', cascade='all, delete-orphan')
+
+    def __repr__(self):
+        return f'<SerialNumberTransferItem {self.item_code}>'
+
+
+class SerialNumberTransferSerial(db.Model):
+    """Serial Number Transfer Serial model for individual serial numbers"""
+    __tablename__ = 'serial_number_transfer_serials'
+
+    id = db.Column(db.Integer, primary_key=True)
+    transfer_item_id = db.Column(db.Integer, db.ForeignKey('serial_number_transfer_items.id'), nullable=False)
+    serial_number = db.Column(db.String(100), nullable=False)
+    internal_serial_number = db.Column(db.String(100), nullable=True)
+    is_validated = db.Column(db.Boolean, default=False)
+    validation_error = db.Column(db.Text, nullable=True)
+    qc_status = db.Column(db.String(20), default='pending')  # pending, approved, rejected
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    transfer_item = relationship('SerialNumberTransferItem', back_populates='serials')
+
+    def __repr__(self):
+        return f'<SerialNumberTransferSerial {self.serial_number}>'
+
+
+class SerialItemTransfer(db.Model):
+    """Serial Item Transfer model for serial-driven transfers"""
+    __tablename__ = 'serial_item_transfers'
+
+    id = db.Column(db.Integer, primary_key=True)
+    transfer_number = db.Column(db.String(50), nullable=False, unique=True)
+    sap_document_number = db.Column(db.String(50), nullable=True)
+    status = db.Column(db.String(20), default='draft')  # draft, submitted, qc_approved, posted, rejected
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    qc_approver_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    qc_approved_at = db.Column(db.DateTime, nullable=True)
+    qc_notes = db.Column(db.Text, nullable=True)
+    from_warehouse = db.Column(db.String(10), nullable=False)
+    to_warehouse = db.Column(db.String(10), nullable=False)
+    priority = db.Column(db.String(10), default='normal')
+    notes = db.Column(db.Text, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    user = relationship('User', foreign_keys=[user_id], backref='serial_item_transfers')
+    qc_approver = relationship('User', foreign_keys=[qc_approver_id], backref='qc_approved_serial_item_transfers')
+    items = relationship('SerialItemTransferItem', back_populates='transfer', cascade='all, delete-orphan')
+
+    def __repr__(self):
+        return f'<SerialItemTransfer {self.transfer_number}>'
+
+
+class SerialItemTransferItem(db.Model):
+    """Serial Item Transfer Item model"""
+    __tablename__ = 'serial_item_transfer_items'
+
+    id = db.Column(db.Integer, primary_key=True)
+    serial_item_transfer_id = db.Column(db.Integer, db.ForeignKey('serial_item_transfers.id'), nullable=False)
+    serial_number = db.Column(db.String(100), nullable=False)
+    item_code = db.Column(db.String(50), nullable=False)
+    item_description = db.Column(db.String(200), nullable=False)
+    warehouse_code = db.Column(db.String(10), nullable=False)
+    quantity = db.Column(db.Integer, default=1)
+    unit_of_measure = db.Column(db.String(10), default='EA')
+    from_warehouse_code = db.Column(db.String(10), nullable=False)
+    to_warehouse_code = db.Column(db.String(10), nullable=False)
+    qc_status = db.Column(db.String(20), default='pending')  # pending, approved, rejected
+    validation_status = db.Column(db.String(20), default='pending')  # pending, valid, invalid
+    validation_error = db.Column(db.Text, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    transfer = relationship('SerialItemTransfer', back_populates='items')
+
+    def __repr__(self):
+        return f'<SerialItemTransferItem {self.serial_number}>'
+
