@@ -146,15 +146,32 @@ login_manager.login_message = 'Please log in to access this page.'
 #     return e
 
 # SAP B1 Configuration (from JSON credentials)
-app.config['SAP_B1_SERVER'] = get_credential(credentials, 'SAP_B1_SERVER', 'https://10.112.253.173:50000')
-app.config['SAP_B1_USERNAME'] = get_credential(credentials, 'SAP_B1_USERNAME', 'manager')
-app.config['SAP_B1_PASSWORD'] = get_credential(credentials, 'SAP_B1_PASSWORD', '1422')
-app.config['SAP_B1_COMPANY_DB'] = get_credential(credentials, 'SAP_B1_COMPANY_DB', 'SBODemoUS')
+# For cloud/demo environments, use empty defaults to enable offline mode
+sap_server = get_credential(credentials, 'SAP_B1_SERVER', '')
+sap_username = get_credential(credentials, 'SAP_B1_USERNAME', '')
+sap_password = get_credential(credentials, 'SAP_B1_PASSWORD', '')
+sap_company_db = get_credential(credentials, 'SAP_B1_COMPANY_DB', '')
 
-# Log SAP B1 configuration (without password)
-logging.info(f"SAP B1 Server: {app.config['SAP_B1_SERVER']}")
-logging.info(f"SAP B1 Username: {app.config['SAP_B1_USERNAME']}")
-logging.info(f"SAP B1 Company DB: {app.config['SAP_B1_COMPANY_DB']}")
+# Use demo credentials only if explicitly set
+if not sap_server and os.environ.get('USE_DEMO_SAP_CREDENTIALS') == 'true':
+    sap_server = 'https://10.112.253.173:50000'
+    sap_username = 'manager'
+    sap_password = '1422'
+    sap_company_db = 'SBODemoUS'
+    logging.info("🔧 Using demo SAP B1 credentials (offline mode expected)")
+
+app.config['SAP_B1_SERVER'] = sap_server
+app.config['SAP_B1_USERNAME'] = sap_username
+app.config['SAP_B1_PASSWORD'] = sap_password
+app.config['SAP_B1_COMPANY_DB'] = sap_company_db
+
+# Log SAP B1 configuration status
+if sap_server and sap_username and sap_company_db:
+    logging.info(f"SAP B1 Server: {sap_server}")
+    logging.info(f"SAP B1 Username: {sap_username}")
+    logging.info(f"SAP B1 Company DB: {sap_company_db}")
+else:
+    logging.info("🔒 SAP B1 integration disabled - running in offline mode")
 
 # Import models
 import models

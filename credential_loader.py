@@ -26,7 +26,11 @@ def load_credentials_from_json(file_path=None):
             logging.info(f"✅ Credentials loaded from {file_path}")
             return credentials
         else:
-            logging.warning(f"⚠️ Credential file not found at {file_path}")
+            # Check if we're in a cloud environment (Replit) - don't show warning
+            if os.environ.get('REPLIT_DB_URL') or os.environ.get('DATABASE_URL'):
+                logging.info(f"📋 Running in cloud environment - using environment variables for credentials")
+            else:
+                logging.warning(f"⚠️ Credential file not found at {file_path}")
             return {}
     except json.JSONDecodeError as e:
         logging.error(f"❌ Error parsing JSON credential file: {e}")
