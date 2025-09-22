@@ -10,32 +10,12 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime
 
-# Load configuration from JSON file
-config = {}
-config_paths = [
-    'sap_login/credential.json',  # Primary credential path
-    'config.json',                # Fallback to old path
-]
-
-config_loaded = False
-for config_path in config_paths:
-    try:
-        with open(config_path, 'r') as f:
-            config = json.load(f)
-        logging.info(f"Dual DB: Configuration loaded from {config_path}")
-        config_loaded = True
-        break
-    except FileNotFoundError:
-        continue
-    except Exception as e:
-        logging.warning(f"Dual DB: Could not load {config_path}: {e}")
-
-if not config_loaded:
-    logging.warning("Dual DB: No JSON configuration file found, using environment variables as fallback")
+# Configuration: Use environment variables directly for Replit compatibility
+logging.info("Dual DB: Using environment variables for configuration (Replit environment)")
 
 def get_config(key, default=None):
-    """Get configuration value from JSON config first, then environment variables as fallback"""
-    return config.get(key, os.environ.get(key, default))
+    """Get configuration value from environment variables directly (Replit environment)"""
+    return os.environ.get(key, default)
 
 class DualDatabaseManager:
     """Manages dual database support for SQLite and MySQL"""

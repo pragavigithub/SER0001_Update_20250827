@@ -7,32 +7,14 @@ from flask_login import LoginManager
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-# Load configuration from JSON file
+# Configuration: Use environment variables directly for Replit compatibility
+# No credential.json files needed - all configuration via secure environment variables
 config = {}
-config_paths = [
-    os.path.join("C:", "tmp", "sap_login", "credential.json"),
-    "config.json",
-]
-
-config_loaded = False
-for config_path in config_paths:
-    try:
-        with open(config_path, 'r') as f:
-            config = json.load(f)
-        logging.info(f"Configuration loaded from {config_path}")
-        config_loaded = True
-        break
-    except FileNotFoundError:
-        continue
-    except Exception as e:
-        logging.warning(f"Could not load {config_path}: {e}")
-
-if not config_loaded:
-    logging.warning("No JSON configuration file found, using environment variables as fallback")
+logging.info("Using environment variables for configuration (Replit environment)")
 
 def get_config(key, default=None):
-    """Get configuration value from JSON config first, then environment variables as fallback"""
-    return config.get(key, os.environ.get(key, default))
+    """Get configuration value from environment variables directly (Replit environment)"""
+    return os.environ.get(key, default)
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
