@@ -5,8 +5,7 @@ All routes related to goods receipt against purchase orders
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 from app import db
-from modules.grpo.models import GRPODocument, GRPOItem
-from modules.shared.models import User
+from models import GRPODocument, GRPOItem, User
 import logging
 from datetime import datetime
 
