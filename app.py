@@ -158,6 +158,7 @@ logging.info(f"SAP B1 Company DB: {app.config['SAP_B1_COMPANY_DB']}")
 
 # Import models
 import models
+import models_extensions
 
 
 with app.app_context():
