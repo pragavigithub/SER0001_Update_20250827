@@ -5,7 +5,7 @@ All routes related to inventory transfers between warehouses/bins
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 from app import db
-from models import InventoryTransfer, InventoryTransferItem, User, SerialNumberTransfer, SerialNumberTransferItem, SerialNumberTransferSerial
+from models import InventoryTransfer, InventoryTransferItem, User, SerialNumberTransfer, SerialNumberTransferItem, SerialNumberTransferSerial, SerialItemTransfer, SerialItemTransferItem
 from sqlalchemy import or_
 import logging
 import random
@@ -592,6 +592,76 @@ def serial_detail(transfer_id):
         return redirect(url_for('inventory_transfer.serial_index'))
     
     return render_template('serial_transfer_detail.html', transfer=transfer)
+
+
+# Serial Item Transfer Routes  
+@transfer_bp.route('/serial_item')
+@login_required
+def serial_item_index():
+    """Serial Item Transfer index page"""
+    if not current_user.has_permission('serial_item_transfer'):
+        flash('Access denied - Serial Item Transfer permissions required', 'error')
+        return redirect(url_for('dashboard'))
+    
+    # Get pagination parameters
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 25, type=int)
+    search = request.args.get('search', '')
+    user_based = request.args.get('user_based', 'true')
+    
+    # Build query
+    query = SerialItemTransfer.query
+    
+    # Apply user-based filtering for non-admin users
+    if current_user.role not in ['admin', 'manager'] or user_based == 'true':
+        query = query.filter_by(user_id=current_user.id)
+    
+    # Apply search filter
+    if search:
+        search_filter = or_(
+            SerialItemTransfer.transfer_number.ilike(f'%{search}%'),
+            SerialItemTransfer.from_warehouse.ilike(f'%{search}%'),
+            SerialItemTransfer.to_warehouse.ilike(f'%{search}%'),
+            SerialItemTransfer.status.ilike(f'%{search}%')
+        )
+        query = query.filter(search_filter)
+    
+    # Apply ordering and pagination
+    query = query.order_by(SerialItemTransfer.created_at.desc())
+    pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+    transfers = pagination.items
+    
+    return render_template('serial_item_transfer_index.html', 
+                         transfers=transfers, 
+                         pagination=pagination,
+                         search=search,
+                         per_page=per_page,
+                         user_based=user_based)
+
+
+@transfer_bp.route('/serial_item/create')
+@login_required
+def serial_item_create():
+    """Serial Item Transfer create page"""
+    if not current_user.has_permission('serial_item_transfer'):
+        flash('Access denied - Serial Item Transfer permissions required', 'error')
+        return redirect(url_for('dashboard'))
+    
+    return render_template('serial_item_transfer_create.html')
+
+
+@transfer_bp.route('/serial_item/<int:transfer_id>')
+@login_required
+def serial_item_detail(transfer_id):
+    """Serial Item Transfer detail page"""
+    transfer = SerialItemTransfer.query.get_or_404(transfer_id)
+    
+    # Check permissions
+    if transfer.user_id != current_user.id and current_user.role not in ['admin', 'manager', 'qc']:
+        flash('Access denied - You can only view your own transfers', 'error')
+        return redirect(url_for('inventory_transfer.serial_item_index'))
+    
+    return render_template('serial_item_transfer_detail.html', transfer=transfer)
 
 
 def log_status_change(transfer_id, previous_status, new_status, changed_by_id, notes=None):

@@ -75,7 +75,7 @@
                     {% endif %}
                     {% if current_user.has_permission('serial_item_transfer') %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('serial_item_transfer.index') }}">
+                        <a class="nav-link" href="{{ url_for('inventory_transfer.serial_item_index') }}">
                             <i data-feather="tag"></i> Serial Item Transfer
                         </a>
                     </li>
