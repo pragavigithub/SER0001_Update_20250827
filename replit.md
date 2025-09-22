@@ -5,7 +5,7 @@ A Flask-based warehouse management system with SAP integration for barcode scann
 
 ## Project Architecture
 - **Backend**: Flask web application
-- **Database**: SQLite (fallback from MySQL configuration)
+- **Database**: PostgreSQL (Replit cloud environment)
 - **Frontend**: Server-side rendering with Jinja2 templates
 - **Integration**: SAP API integration for warehouse operations
 - **Authentication**: Flask-Login for user management
