@@ -10,9 +10,10 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 # Load configuration from JSON file
 config = {}
 config_paths = [
-    os.path.join("C:", "tmp", "sap_login", "credential.json")
+    'sap_login/credential.json',  # Primary credential path
+    'config.json',                # Fallback to old path
 ]
-print(config_paths)
+
 config_loaded = False
 for config_path in config_paths:
     try:
