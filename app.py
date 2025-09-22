@@ -1,4 +1,5 @@
 import os
+import json
 import logging
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -6,15 +7,20 @@ from flask_login import LoginManager
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-# Load environment variables from .env file if it exists
+# Load configuration from JSON file
+config = {}
 try:
-    from dotenv import load_dotenv
-    load_dotenv()
-    logging.info("Environment variables loaded from .env file")
-except ImportError:
-    logging.info("python-dotenv not installed, using system environment variables")
+    with open('config.json', 'r') as f:
+        config = json.load(f)
+    logging.info("Configuration loaded from config.json file")
+except FileNotFoundError:
+    logging.warning("config.json file not found, using environment variables as fallback")
 except Exception as e:
-    logging.warning(f"Could not load .env file: {e}")
+    logging.warning(f"Could not load config.json file: {e}, using environment variables as fallback")
+
+def get_config(key, default=None):
+    """Get configuration value from JSON config first, then environment variables as fallback"""
+    return config.get(key, os.environ.get(key, default))
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -30,8 +36,7 @@ login_manager = LoginManager()
 
 # Create Flask app
 app = Flask(__name__)
-app.secret_key = os.environ.get(
-    "SESSION_SECRET") or "dev-secret-key-change-in-production"
+app.secret_key = get_config("SESSION_SECRET", "dev-secret-key-change-in-production")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 # Database configuration - prioritize PostgreSQL for Replit environment
@@ -39,7 +44,7 @@ database_url = None
 db_type = None
 
 # Check for PostgreSQL first (Replit environment priority)
-database_url_env = os.environ.get("DATABASE_URL", "")
+database_url_env = get_config("DATABASE_URL", "")
 
 # Try PostgreSQL first if DATABASE_URL is available and contains postgres
 if database_url_env and ("postgres" in database_url_env or "postgresql" in database_url_env):
@@ -74,14 +79,14 @@ if database_url_env and ("postgres" in database_url_env or "postgresql" in datab
 # Fallback to MySQL (local development)
 if not database_url:
     mysql_config = {
-        'host': os.environ.get('MYSQL_HOST', 'localhost'),
-        'port': os.environ.get('MYSQL_PORT', '3306'),
-        'user': os.environ.get('MYSQL_USER', 'root'),
-        'password': os.environ.get('MYSQL_PASSWORD', 'root@123'),
-        'database': os.environ.get('MYSQL_DATABASE', 'wms_db_dev')
+        'host': get_config('MYSQL_HOST', 'localhost'),
+        'port': get_config('MYSQL_PORT', '3306'),
+        'user': get_config('MYSQL_USER', 'root'),
+        'password': get_config('MYSQL_PASSWORD', 'root@123'),
+        'database': get_config('MYSQL_DATABASE', 'wms_db_dev')
     }
     
-    has_mysql_env = any(os.environ.get(key) for key in ['MYSQL_HOST', 'MYSQL_USER', 'MYSQL_PASSWORD', 'MYSQL_DATABASE'])
+    has_mysql_env = any(get_config(key) for key in ['MYSQL_HOST', 'MYSQL_USER', 'MYSQL_PASSWORD', 'MYSQL_DATABASE'])
     is_mysql_url = database_url_env.startswith("mysql")
     
     if has_mysql_env or is_mysql_url:
@@ -140,13 +145,11 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'  # type: ignore
 login_manager.login_message = 'Please log in to access this page.'
 
-# SAP B1 Configuration - Updated with user's real SAP server
-app.config['SAP_B1_SERVER'] = os.environ.get('SAP_B1_SERVER',
-                                             'https://10.112.253.173:50000')
-app.config['SAP_B1_USERNAME'] = os.environ.get('SAP_B1_USERNAME', 'manager')
-app.config['SAP_B1_PASSWORD'] = os.environ.get('SAP_B1_PASSWORD', '1422')
-app.config['SAP_B1_COMPANY_DB'] = os.environ.get('SAP_B1_COMPANY_DB',
-                                                 'SBODemoUS')
+# SAP B1 Configuration - Using JSON config file
+app.config['SAP_B1_SERVER'] = get_config('SAP_B1_SERVER', 'https://10.112.253.173:50000')
+app.config['SAP_B1_USERNAME'] = get_config('SAP_B1_USERNAME', 'manager')
+app.config['SAP_B1_PASSWORD'] = get_config('SAP_B1_PASSWORD', '1422')
+app.config['SAP_B1_COMPANY_DB'] = get_config('SAP_B1_COMPANY_DB', 'SBODemoUS')
 
 # Import models after app is configured to avoid circular imports
 import models
