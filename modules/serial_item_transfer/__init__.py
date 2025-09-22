@@ -1,1 +1,0 @@
-# Serial Item Transfer Module

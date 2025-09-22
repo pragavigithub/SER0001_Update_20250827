@@ -5,7 +5,6 @@ Provides a unified interface to register all module blueprints
 from flask import Flask
 from modules.grpo.routes import grpo_bp
 from modules.inventory_transfer.routes import transfer_bp
-from modules.serial_item_transfer.routes import serial_item_bp
 
 def register_modules(app: Flask):
     """Register all module blueprints with the Flask app"""
@@ -16,16 +15,12 @@ def register_modules(app: Flask):
     # Register Inventory Transfer module
     app.register_blueprint(transfer_bp)
     
-    # Register Serial Item Transfer module
-    app.register_blueprint(serial_item_bp)
-    
     # Add module-specific template folders
     try:
         if hasattr(app.jinja_loader, 'searchpath'):
             app.jinja_loader.searchpath.extend([
                 'modules/grpo/templates',
-                'modules/inventory_transfer/templates',
-                'modules/serial_item_transfer/templates'
+                'modules/inventory_transfer/templates'
             ])
     except Exception as e:
         print(f"⚠️ Template loader configuration skipped: {e}")
@@ -34,7 +29,6 @@ def register_modules(app: Flask):
     print("📁 Module structure:")
     print("   - GRPO Module: /grpo/*")
     print("   - Inventory Transfer Module: /inventory_transfer/*")
-    print("   - Serial Item Transfer Module: /serial-item-transfer/*")
     print("   - Shared Models: modules/shared/models.py")
 
 def get_module_info():
