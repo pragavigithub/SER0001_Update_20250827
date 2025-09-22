@@ -4,11 +4,38 @@ Handles both SQLite (for Replit) and MySQL (for local development) synchronizati
 """
 
 import os
+import json
 import logging
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import SQLAlchemyError
-import json
 from datetime import datetime
+
+# Load configuration from JSON file
+config = {}
+config_paths = [
+    'sap_login/credential.json',  # Primary credential path
+    'config.json',                # Fallback to old path
+]
+
+config_loaded = False
+for config_path in config_paths:
+    try:
+        with open(config_path, 'r') as f:
+            config = json.load(f)
+        logging.info(f"Dual DB: Configuration loaded from {config_path}")
+        config_loaded = True
+        break
+    except FileNotFoundError:
+        continue
+    except Exception as e:
+        logging.warning(f"Dual DB: Could not load {config_path}: {e}")
+
+if not config_loaded:
+    logging.warning("Dual DB: No JSON configuration file found, using environment variables as fallback")
+
+def get_config(key, default=None):
+    """Get configuration value from JSON config first, then environment variables as fallback"""
+    return config.get(key, os.environ.get(key, default))
 
 class DualDatabaseManager:
     """Manages dual database support for SQLite and MySQL"""
@@ -27,11 +54,11 @@ class DualDatabaseManager:
         
         # MySQL engine (for local development sync)
         mysql_config = {
-            'host': os.environ.get('MYSQL_HOST', 'localhost'),
-            'port': os.environ.get('MYSQL_PORT', '3306'),
-            'user': os.environ.get('MYSQL_USER', 'root'),
-            'password': os.environ.get('MYSQL_PASSWORD', 'root@123'),
-            'database': os.environ.get('MYSQL_DATABASE', 'wms_db_dev')
+            'host': get_config('MYSQL_HOST', 'localhost'),
+            'port': get_config('MYSQL_PORT', '3306'),
+            'user': get_config('MYSQL_USER', 'root'),
+            'password': get_config('MYSQL_PASSWORD', 'root123'),
+            'database': get_config('MYSQL_DATABASE', 'wms_db_dev')
         }
         
         try:

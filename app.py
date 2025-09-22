@@ -94,7 +94,7 @@ if not database_url:
         'host': get_config('MYSQL_HOST', 'localhost'),
         'port': get_config('MYSQL_PORT', '3306'),
         'user': get_config('MYSQL_USER', 'root'),
-        'password': get_config('MYSQL_PASSWORD', 'root@123'),
+        'password': get_config('MYSQL_PASSWORD', 'root123'),
         'database': get_config('MYSQL_DATABASE', 'wms_db_dev')
     }
     
