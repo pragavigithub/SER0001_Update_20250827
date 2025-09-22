@@ -15,10 +15,26 @@ ENHANCEMENTS INCLUDED:
 
 import os
 import sys
+import json
 import logging
 import pymysql
 from datetime import datetime
 from werkzeug.security import generate_password_hash
+
+# Load configuration from JSON file
+config = {}
+try:
+    with open('config.json', 'r') as f:
+        config = json.load(f)
+    print("✅ Configuration loaded from config.json file")
+except FileNotFoundError:
+    print("⚠️ config.json file not found, using environment variables as fallback")
+except Exception as e:
+    print(f"⚠️ Could not load config.json file: {e}, using environment variables as fallback")
+
+def get_config(key, default=None):
+    """Get configuration value from JSON config first, then environment variables as fallback"""
+    return config.get(key, os.environ.get(key, default))
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -30,17 +46,17 @@ class MySQLMigration:
         self.cursor = None
     
     def get_database_config(self):
-        """Get database configuration from environment or user input"""
-        config = {
-            'host': os.getenv('MYSQL_HOST') or input('MySQL Host (localhost): ') or 'localhost',
-            'port': int(os.getenv('MYSQL_PORT') or input('MySQL Port (3306): ') or '3306'),
-            'user': os.getenv('MYSQL_USER') or input('MySQL User (root): ') or 'root',
-            'password': os.getenv('MYSQL_PASSWORD') or input('MySQL Password: '),
-            'database': os.getenv('MYSQL_DATABASE') or input('Database Name (wms_db_dev): ') or 'wms_db_dev',
+        """Get database configuration from JSON config, then environment, then user input"""
+        config_dict = {
+            'host': get_config('MYSQL_HOST') or input('MySQL Host (localhost): ') or 'localhost',
+            'port': int(get_config('MYSQL_PORT') or input('MySQL Port (3306): ') or '3306'),
+            'user': get_config('MYSQL_USER') or input('MySQL User (root): ') or 'root',
+            'password': get_config('MYSQL_PASSWORD') or input('MySQL Password: '),
+            'database': get_config('MYSQL_DATABASE') or input('Database Name (wms_db_dev): ') or 'wms_db_dev',
             'charset': 'utf8mb4',
             'autocommit': False
         }
-        return config
+        return config_dict
     
     def connect(self, config):
         """Connect to MySQL database"""
