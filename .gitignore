@@ -1,5 +1,7 @@
 # Configuration files with sensitive data
 config.json
+sap_login/credential.json
+sap_login/
 *.json.local
 *.json.backup
 

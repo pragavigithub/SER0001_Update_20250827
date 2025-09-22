@@ -32,14 +32,26 @@ from datetime import datetime
 
 # Load configuration from JSON file
 config = {}
-try:
-    with open('config.json', 'r') as f:
-        config = json.load(f)
-    print("✅ Configuration loaded from config.json file")
-except FileNotFoundError:
-    print("⚠️ config.json file not found, using environment variables as fallback")
-except Exception as e:
-    print(f"⚠️ Could not load config.json file: {e}, using environment variables as fallback")
+config_paths = [
+    'sap_login/credential.json',  # Primary credential path
+    'config.json',                # Fallback to old path
+]
+
+config_loaded = False
+for config_path in config_paths:
+    try:
+        with open(config_path, 'r') as f:
+            config = json.load(f)
+        print(f"✅ Configuration loaded from {config_path}")
+        config_loaded = True
+        break
+    except FileNotFoundError:
+        continue
+    except Exception as e:
+        print(f"⚠️ Could not load {config_path}: {e}")
+
+if not config_loaded:
+    print("⚠️ No JSON configuration file found, using environment variables as fallback")
 
 def get_config(key, default=None):
     """Get configuration value from JSON config first, then environment variables as fallback"""
